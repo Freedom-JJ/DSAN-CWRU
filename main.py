@@ -132,10 +132,10 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--root_path', type=str, help='Root path for dataset',
                         default='./dataset//Original_images/')
-    parser.add_argument('--src', type=str,
-                        help='Source domain', default='amazon/images')
-    parser.add_argument('--tar', type=str,
-                        help='Target domain', default='webcam/images')
+    # parser.add_argument('--src', type=str,
+    #                     help='Source domain', default='amazon/images')
+    # parser.add_argument('--tar', type=str,
+    #                     help='Target domain', default='webcam/images')
     parser.add_argument('--nclass', type=int,
                         help='Number of classes', default=9)
     parser.add_argument('--batch_size', type=float,
@@ -198,9 +198,9 @@ if __name__ == '__main__':
             param_group['lr'] = args.lr[index] / math.pow((1 + 10 * (epoch - 1) / args.nepoch), 0.75)
 
         train_epoch(epoch, model, dataloaders, optimizer)
-        t_correct = test(model, dataloaders[-1])
         s_correct = test(model,dataloaders[0])
         print("source accuary:" +str( 100. * s_correct / len(dataloaders[0].dataset)))
+        t_correct = test(model, dataloaders[-1])
         if t_correct > correct:
             correct = t_correct
             stop = 0
