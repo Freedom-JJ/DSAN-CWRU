@@ -19,6 +19,10 @@ The contributions of this paper are summarized as follows.
 
 > Note that for tasks D-A and W-A, setting epochs = 800 or larger could achieve better performance.
 
+## Results on CWRU
+| Method | A - D | A - C | B - C | C - A | D - B  |AB-CD|
+|:------:|:-----:|:-----:|:----: |:-----:| :-----:|:------:|
+| DSAN   |100±0.0|100±0.1|100±0.0|100±0.0|88.88±0.1|100±0.1|
 ## Reference
 
 ```

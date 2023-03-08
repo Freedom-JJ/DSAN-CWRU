@@ -9,7 +9,7 @@ from DSAN import DSAN
 from data_loader import GetLoader
 import data_loader
 from torchvision import datasets
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader,ConcatDataset
 from CWRUDataset import CWRUDataset
 def load_data(root_path, src, tar, batch_size):
     A = {'B007':'dataset/CWRU/12k_Drive_End_B007_0_118.mat',
@@ -49,12 +49,12 @@ def load_data(root_path, src, tar, batch_size):
     'IR007':'dataset/CWRU/12k_Drive_End_IR007_3_108.mat',
     'IR021':'dataset/CWRU/12k_Drive_End_IR021_3_212.mat'}
     batch_size = 32
-    source_A_dataset = CWRUDataset(A)
-    target_D_dataset = CWRUDataset(D)
-    test_B_dataset = CWRUDataset(B)
+    source_A_dataset =ConcatDataset([CWRUDataset(A),CWRUDataset(B)])
+    target_D_dataset = ConcatDataset([CWRUDataset(C),CWRUDataset(D)])
+    test_D_dataset = ConcatDataset([CWRUDataset(C),CWRUDataset(D)])
     source = DataLoader(dataset=source_A_dataset,batch_size=batch_size,shuffle=True)
     target = DataLoader(dataset=target_D_dataset,batch_size=batch_size,shuffle=True)
-    test   = DataLoader(dataset=test_B_dataset,batch_size=batch_size,shuffle=True) 
+    test   = DataLoader(dataset=test_D_dataset,batch_size=batch_size,shuffle=True) 
     return source , target , test
     # kwargs = {'num_workers': 1, 'pin_memory': True}
     # loader_src = data_loader.load_training(root_path, src, batch_size, kwargs)
@@ -132,10 +132,10 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--root_path', type=str, help='Root path for dataset',
                         default='./dataset//Original_images/')
-    # parser.add_argument('--src', type=str,
-    #                     help='Source domain', default='amazon/images')
-    # parser.add_argument('--tar', type=str,
-    #                     help='Target domain', default='webcam/images')
+    parser.add_argument('--src', type=str,
+                        help='Source domain', default='amazon/images')
+    parser.add_argument('--tar', type=str,
+                        help='Target domain', default='webcam/images')
     parser.add_argument('--nclass', type=int,
                         help='Number of classes', default=9)
     parser.add_argument('--batch_size', type=float,
@@ -205,6 +205,7 @@ if __name__ == '__main__':
             correct = t_correct
             stop = 0
             torch.save(model, 'model.pkl')
+            print("------ save ----")
         print(
             f'{args.src}-{args.tar}: max correct: {correct} max accuracy: {100. * correct / len(dataloaders[-1].dataset):.2f}%\n')
 
